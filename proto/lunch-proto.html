@@ -464,7 +464,7 @@ const STARS=n=>'★'.repeat(n)+'<span class="dim">'+'★'.repeat(5-n)+'</span>';
 function tags(p){const t=[];if(p.hidden)t.push('<span class="tag bad">미확인</span>');if(p.stars)t.push(`<span class="tag star">${STARS(p.stars)}</span>`);if(p.recent!=null)t.push(`<span class="tag">최근 1년 ${p.recent}건</span>`);if(p.price?.level){t.push(`<span class="tag" title="점심 1인 가격대">₩ ${PLV[p.price.level]||p.price.level}</span>`);}if(WL[p.waiting?.level])t.push(`<span class="tag ${WL[p.waiting.level][1]}">${WL[p.waiting.level][0]}</span>`);if(p.fac?.private_room==='YES')t.push(`<span class="tag acc">룸 ${p.fac.room_capacity_max?p.fac.room_capacity_max+'인':''}</span>`);if(p.fac?.reservation==='YES')t.push('<span class="tag">예약</span>');if(p.fac?.group_capacity_max)t.push(`<span class="tag">${p.fac.group_capacity_max}명까지</span>`);return t.join('');}
 
 // 일반용: 부제에 내 위치에서 걸어서 60분 안의 동네(자치구)만 보여준다
-function renderZones(){if(!DATA.shards)return;const el=document.querySelector('.brandrow .sub');if(!el||!S.loc||!S.loc.coord)return;const reach=(60*67*1.35)/1000;
+function renderZones(){if(!DATA.shards)return;const el=document.querySelector('.brandrow .sub');if(!el||!S.loc||!S.loc.coord)return;if(S.loc.name==='현재 위치'){el.textContent='서울 전체 · 내 위치 기준';return;}const reach=(60*67*1.35)/1000;
   const near=DATA.shards.index.map(sh=>({gu:sh.gu,d:kmBetween(S.loc.coord,sh.center)-sh.radiusKm})).filter(x=>x.d<=reach).sort((a,b)=>a.d-b.d).map(x=>x.gu);
   const BUDGET=18;let shown=[];for(const g of near){const cand=[...shown,g].join(' · ');const rest=near.length-shown.length-1;if((cand+(rest>0?' 외 '+rest+'곳':'')).length>BUDGET&&shown.length)break;shown.push(g);}
   el.textContent=near.length?(shown.join(' · ')+(near.length>shown.length?' 외 '+(near.length-shown.length)+'곳':'')):'서울 전체';
