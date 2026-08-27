@@ -1,9 +1,9 @@
-/* AIBK 한끼 서비스 워커 — build-proto.js 가 75b871f3e7/data.4f9aae9eda.json 을 채워 sw.js 로 낸다.
+/* AIBK 한끼 서비스 워커 — build-proto.js 가 d0b1b773a4/data.ebe0bdd7cb.json 을 채워 sw.js 로 낸다.
  * 껍데기(HTML·manifest·아이콘)는 버전별 캐시, 데이터(data.<해시>.json)는 해시로 캐시.
  * HTML 은 네트워크 우선(4초) → 캐시. 데이터는 캐시 우선. notices.json 등 나머지는 손대지 않는다. */
 const VER = '__VER__';
 const DATA_URL = '__DATA_URL__';
-const BUILD = '4f9aae9eda';
+const BUILD = 'ebe0bdd7cb';
 const SHELL = 'aibk-shell-' + VER;
 const DATAC = 'aibk-data';
 const PRECACHE = ['lunch-proto.html', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'];
