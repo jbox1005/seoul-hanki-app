@@ -32,7 +32,7 @@ button.danger{color:var(--bad);border-color:var(--bad)}
 
   <div class="card">
     <h2>열쇠</h2>
-    <div class="hint">GitHub 토큰은 <b>이 브라우저에만</b> 저장됩니다(localStorage). 공개 저장소 <code id="repoLabel"></code> 의 <code>proto/notices.json</code> 을 갈아끼웁니다. 토큰 권한: repo (또는 fine-grained: Contents 쓰기).</div>
+    <div class="hint">GitHub 토큰은 <b>이 브라우저에만</b> 저장됩니다(localStorage). 안내판 저장소 <code id="repoLabel"></code> 의 안내판 파일을 갈아끼웁니다. 토큰 권한: repo (또는 fine-grained: Contents 쓰기).</div>
     <label>GitHub 토큰</label>
     <div class="row"><input id="tok" type="password" placeholder="ghp_… 또는 github_pat_…" style="flex:1"><button id="saveTok">저장</button><button id="clearTok">지우기</button></div>
     <div class="msg" id="tokMsg"></div>
@@ -58,9 +58,11 @@ button.danger{color:var(--bad);border-color:var(--bad)}
 
   <div class="card">
     <h2>원격 설정</h2>
-    <div class="hint">앱을 새로 내지 않고 바꾸는 값. <code>proto/app-config.json</code> 은 빌드 시 앱에 박히므로 여기서는 공지 파일 안의 <code>config</code> 로 덮어씁니다.</div>
+    <div class="hint">앱을 새로 내지 않고 바꾸는 값. 앱은 켤 때 안내판을 읽어 이 값을 따릅니다. <b>서버를 옮길 때는 아래 주소만 바꾸고 올리기.</b></div>
     <label>오류 신고·건의 받을 메일 (비우면 "준비 중" 안내)</label><input id="feedbackEmail" placeholder="example@gmail.com">
     <label>상단 띠 문구 (비우면 없음) — 예: 긴급 안내</label><input id="banner" placeholder="">
+    <label>데이터 서버 주소 (앱 껍데기·가게 데이터가 있는 곳, 끝에 /proto/)</label><input id="dataUrl" placeholder="https://…/proto/">
+    <label>API 서버 주소 (로그인·후기·순위 — 아직 없으면 비움)</label><input id="apiUrl" placeholder="">
   </div>
 
   <div class="card doc"><details>
@@ -103,7 +105,7 @@ button.danger{color:var(--bad);border-color:var(--bad)}
   </details></div>
 </div>
 <script>
-const REPO = 'jbox1005/seoul-hanki-app'; const PATH = 'proto/notices.json'; const RAW = 'notices.json';
+const REPO = 'IBK25237/hanki-config'; const PATH = 'hanki.json'; const RAW = 'https://ibk25237.github.io/hanki-config/hanki.json';
 document.getElementById('repoLabel').textContent = REPO;
 const $ = (s) => document.querySelector(s);
 let doc = { updated: '', notices: [], config: {} }; let sha = null;
@@ -126,7 +128,7 @@ async function load() {
     }
   } catch (e) { $('#pubMsg').textContent = '불러오기 실패: ' + e.message; $('#pubMsg').className = 'msg bad'; }
   doc.notices = doc.notices || []; doc.config = doc.config || {};
-  $('#feedbackEmail').value = doc.config.feedbackEmail || ''; $('#banner').value = doc.config.banner || '';
+  $('#feedbackEmail').value = doc.config.feedbackEmail || ''; $('#banner').value = doc.config.banner || ''; $('#dataUrl').value = doc.data || ''; $('#apiUrl').value = doc.api || '';
   render();
 }
 function render() {
@@ -146,7 +148,7 @@ $('#reload').onclick = load;
 $('#publish').onclick = async () => {
   const tok = getTok(); if (!tok) { alert('먼저 GitHub 토큰을 저장하세요.'); return; }
   doc.updated = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 16).replace('T', ' ');
-  doc.config = { feedbackEmail: $('#feedbackEmail').value.trim(), banner: $('#banner').value.trim() };
+  doc.config = { feedbackEmail: $('#feedbackEmail').value.trim(), banner: $('#banner').value.trim() }; doc.data = $('#dataUrl').value.trim(); doc.api = $('#apiUrl').value.trim();
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(doc, null, 2) + '\n')));
   $('#pubMsg').textContent = '올리는 중…'; $('#pubMsg').className = 'msg';
   try {

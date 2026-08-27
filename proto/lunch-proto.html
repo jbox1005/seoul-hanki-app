@@ -420,11 +420,11 @@ h2.q em{color:var(--accent)}
 </div>
 
 <script>
-const DATA_URL='data.8ba2b17414.json';
+const DATA_URL='data.5237482590.json';
 (async function(){let DATA;
 try{DATA=await fetch(DATA_URL).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});}
 catch(e){const w=document.getElementById('spWait');if(w)w.textContent='데이터를 불러오지 못했어요. 네트워크를 확인하고 다시 열어주세요.';const sp=document.getElementById('splash');if(sp)sp.classList.add('slow');return;}
-const NOTICES={list:[],config:{}};
+const NOTICES={list:[],config:{}};let BOARD=null; // 안내판 원본 (data/api 주소 포함)
 // 도보 추정: foodmap/scripts/lib/geo.js 와 같은 식 (직선 × 우회계수 1.35, 67m/분, 100m당 6초 횡단 손실)
 const rad=d=>d*Math.PI/180;
 function hav(a,b){const R=6371000,dLat=rad(b.lat-a.lat),dLng=rad(b.lng-a.lng);const s=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(s));}
@@ -904,7 +904,11 @@ function showNotice(n){$('#nTitle').innerHTML=(n.level==='warn'?'⚠ ':'')+n.tit
   const sa=window.navigator.standalone||matchMedia('(display-mode: standalone)').matches;const nl=$('#nLater');if(!sa){nl.textContent='홈 화면에 추가';nl.onclick=()=>{$('#noticePop').classList.remove('open');openInstall();};}else{nl.textContent='나중에';nl.onclick=()=>{$('#noticePop').classList.remove('open');};}}
 function refreshDot(){$('#helpBtn').classList.toggle('dot',unseenNotices().length>0);}
 function applyRemoteConfig(){const c=NOTICES.config||{};const C=DATA.config||(DATA.config={});if(c.feedbackEmail!=null)C.feedbackEmail=c.feedbackEmail;const b=$('#banner');if(c.banner){b.textContent=c.banner;b.hidden=false;}else b.hidden=true;}
-(async function(){const base=/^https?:/.test(location.protocol)?'':((DATA.config||{}).appUrl||'')+'proto/';if(!base&&!/^https?:/.test(location.protocol))return;try{const r=await fetch(base+'notices.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const j=await r.json();NOTICES.list=j.notices||[];NOTICES.config=j.config||{};applyRemoteConfig();refreshDot();
+(async function(){const C=DATA.config||{};const base=/^https?:/.test(location.protocol)?'':(C.appUrl||'')+'proto/';
+  const urls=[...(C.boardUrls||[]),(base||/^https?:/.test(location.protocol))?base+'notices.json':null].filter(Boolean);
+  let j=null;for(const u of urls){try{const r=await fetch(u+(u.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});if(r.ok){j=await r.json();break;}}catch{}}
+  if(!j){try{j=JSON.parse(localStorage.getItem('hanki_board')||'null');}catch{}}else{try{localStorage.setItem('hanki_board',JSON.stringify(j));}catch{}}
+  if(!j)return;BOARD=j;try{NOTICES.list=j.notices||[];NOTICES.config=j.config||{};applyRemoteConfig();refreshDot();
   const first=unseenNotices()[0];if(first){const sp=$('#splash');const wait=sp?2200:300;setTimeout(()=>showNotice(first),wait);}}catch{}})();
 if(window.__spReady)window.__spReady();
 render();
