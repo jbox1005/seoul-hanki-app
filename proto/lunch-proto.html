@@ -414,7 +414,7 @@ h2.q em{color:var(--accent)}
 </div>
 
 <script>
-const DATA_URL='data.ebe0bdd7cb.json';
+const DATA_URL='data.8ba2b17414.json';
 (async function(){let DATA;
 try{DATA=await fetch(DATA_URL).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});}
 catch(e){const w=document.getElementById('spWait');if(w)w.textContent='데이터를 불러오지 못했어요. 네트워크를 확인하고 다시 열어주세요.';const sp=document.getElementById('splash');if(sp)sp.classList.add('slow');return;}
@@ -533,7 +533,7 @@ function detail(id){
   const row=(k,val)=>`<dt>${k}</dt><dd>${dash(val)}</dd>`;
   const conf={HIGH:['높음','ok'],MEDIUM:['보통','warn'],LOW:['낮음','bad'],NONE:['없음','']}[vf.confidence]||['미확인',''];
   const ds={SAMPLE:'샘플(가공 데이터)',DRAFT:'초안(자동 수집)',VERIFIED:'검증됨'}[p.dataStatus]||p.dataStatus;
-  $('#detail').innerHTML=`<div class="dtop"><button id="dback">‹ 뒤로</button><span style="color:var(--ink3);font-size:13px">${p.zone} · ${p.licType||''}${p.lic?' · '+p.lic:''}</span><span style="margin-left:auto">${starBtn(p.id)}</span></div>
+  $('#detail').innerHTML=`<div class="dtop"><button id="dback">‹ 뒤로</button><span style="color:var(--ink3);font-size:13px">${p.zone||p.gu||''} · ${p.licType||''}${p.lic?' · '+p.lic:''}</span><span style="margin-left:auto">${starBtn(p.id)}</span></div>
   <div class="dbody">
     <div>
       <h1 class="display">${p.name}${p.branch?` <small style="font-size:14px;color:var(--ink3)">${p.branch}</small>`:''}</h1>
@@ -544,8 +544,7 @@ function detail(id){
 
     <div><div class="map" id="nmap"><div class="na">지도 불러오는 중…</div></div>
       <div class="maplinks">
-        ${p.phone?`<a class="call" href="tel:${String(p.phone).replace(/[^0-9+]/g,'')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>전화 예약</a>`:`<span class="call off">번호 없음</span>`}<a class="nv" href="${naverAppUrl(p)}" data-web="${naverWebUrl(p)}" id="nvOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>네이버 지도에서 열기</a>
-        ${(!(p.verif&&p.verif.in_naver)&&lk.kakao)?`<a href="${lk.kakao}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>카카오맵</a>`:''}
+        ${p.phone?`<a class="call" href="tel:${String(p.phone).replace(/[^0-9+]/g,'')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>전화 예약</a>`:`<span class="call off">번호 없음</span>`}<a class="nv" href="${naverAppUrl(p)}" data-web="${naverWebUrl(p)}" id="nvOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>네이버 지도</a>
       </div></div>
 
     <div class="sec"><h4>메뉴</h4>${(p.menus||[]).length?(p.menus||[]).map(m=>`<div class="mrow"><span>${m.sig?'<b style="color:var(--accent)">★</b> ':''}${m.name}${m.cat&&L2NAME[m.cat]?` <small style="color:var(--ink3)">${L2NAME[m.cat]}</small>`:''}</span><span class="p">${m.price!=null?won(m.price):(m.note||'시가')}</span></div>`).join(''):'<div class="na">아직 없어요</div>'}</div>
