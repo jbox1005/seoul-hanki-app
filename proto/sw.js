@@ -6,7 +6,7 @@ const DATA_URL = '__DATA_URL__';
 const BUILD = '8ba2b17414';
 const SHELL = 'aibk-shell-' + VER;
 const DATAC = 'aibk-data';
-const PRECACHE = ['lunch-proto.html', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'];
+const PRECACHE = ['./', 'manifest.json', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil((async () => {
@@ -35,11 +35,11 @@ self.addEventListener('fetch', (e) => {
     e.respondWith((async () => { const d = await caches.open(DATAC); const hit = await d.match(req); if (hit) return hit; const r = await fetch(req); if (r.ok) d.put(req, r.clone()); return r; })());
     return;
   }
-  if (file === 'lunch-proto.html' || req.mode === 'navigate') {
+  if (file === '' || file === 'index.html' || file === 'lunch-proto.html' || req.mode === 'navigate') {
     e.respondWith((async () => {
       const c = await caches.open(SHELL);
-      try { const r = await withTimeout(fetch(req), 4000); if (r.ok) c.put('lunch-proto.html', r.clone()); return r; }
-      catch { return (await c.match('lunch-proto.html')) || Response.error(); }
+      try { const r = await withTimeout(fetch(req), 4000); if (r.ok && !r.redirected) c.put('./', r.clone()); return r; }
+      catch { return (await c.match('./')) || Response.error(); }
     })());
     return;
   }
