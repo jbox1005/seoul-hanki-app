@@ -420,7 +420,7 @@ h2.q em{color:var(--accent)}
 </div>
 
 <script>
-const DATA_URL='data.d926d56183.json';
+const DATA_URL='data.81b9b2e2b4.json';
 (async function(){let DATA;
 try{DATA=await fetch(DATA_URL).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});}
 catch(e){const w=document.getElementById('spWait');if(w)w.textContent='데이터를 불러오지 못했어요. 네트워크를 확인하고 다시 열어주세요.';const sp=document.getElementById('splash');if(sp)sp.classList.add('slow');return;}
@@ -467,7 +467,7 @@ const PLV={'₩':'1만 미만','₩₩':'1~2.5만','₩₩₩':'2.5~5만','₩�
 const WL={NONE:['대기 없음','ok'],LOW:['대기 조금','ok'],HIGH:['웨이팅 많음','warn'],EXTREME:['웨이팅 심함','bad']};
 function topMenus(ps,l2,n){const mc=new Map();ps.forEach(p=>(p.menus||[]).forEach(m=>{if(l2&&m.cat&&m.cat!==l2)return;const e=mc.get(m.name)||{c:0,sig:0};e.c++;if(m.sig)e.sig++;mc.set(m.name,e);}));return [...mc.entries()].sort((a,b)=>(b[1].sig-a[1].sig)||(b[1].c-a[1].c)).slice(0,n).map(x=>x[0]);}
 const STARS=n=>'★'.repeat(n)+'<span class="dim">'+'★'.repeat(5-n)+'</span>';
-function tags(p){const t=[];if(p.hidden)t.push('<span class="tag bad">미확인</span>');if(p.stars)t.push(`<span class="tag star">${STARS(p.stars)}</span>`);if(p.recent!=null)t.push(`<span class="tag">최근 1년 ${p.recent}건</span>`);if(p.price?.level){t.push(`<span class="tag" title="점심 1인 가격대">₩ ${PLV[p.price.level]||p.price.level}</span>`);}if(WL[p.waiting?.level])t.push(`<span class="tag ${WL[p.waiting.level][1]}">${WL[p.waiting.level][0]}</span>`);if(p.fac?.private_room==='YES')t.push(`<span class="tag acc">룸 ${p.fac.room_capacity_max?p.fac.room_capacity_max+'인':''}</span>`);if(p.fac?.reservation==='YES')t.push('<span class="tag">예약</span>');if(p.fac?.group_capacity_max)t.push(`<span class="tag">${p.fac.group_capacity_max}명까지</span>`);return t.join('');}
+function tags(p){const t=[];if(p.hidden)t.push('<span class="tag bad">미확인</span>');if(p.stars)t.push(`<span class="tag star">${STARS(p.stars)}</span>`);if(p.recent!=null)t.push(`<span class="tag">인터넷 언급 ${p.recent}건</span>`);if(p.price?.level){t.push(`<span class="tag" title="점심 1인 가격대">₩ ${PLV[p.price.level]||p.price.level}</span>`);}if(WL[p.waiting?.level])t.push(`<span class="tag ${WL[p.waiting.level][1]}">${WL[p.waiting.level][0]}</span>`);if(p.fac?.private_room==='YES')t.push(`<span class="tag acc">룸 ${p.fac.room_capacity_max?p.fac.room_capacity_max+'인':''}</span>`);if(p.fac?.reservation==='YES')t.push('<span class="tag">예약</span>');if(p.fac?.group_capacity_max)t.push(`<span class="tag">${p.fac.group_capacity_max}명까지</span>`);return t.join('');}
 
 // 일반용: 부제에 내 위치에서 걸어서 60분 안의 동네(자치구)만 보여준다
 function renderZones(){if(!DATA.shards)return;const el=document.querySelector('.brandrow .sub');if(!el||!S.loc||!S.loc.coord)return;if(S.loc.name==='현재 위치'){el.textContent='서울 전체 · 내 위치 기준';return;}const reach=(60*67*1.35)/1000;
@@ -553,9 +553,14 @@ function detail(id){
         ${p.phone?`<a class="call" href="tel:${String(p.phone).replace(/[^0-9+]/g,'')}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>전화 예약</a>`:`<span class="call off">번호 없음</span>`}<a class="nv" href="${naverAppUrl(p)}" data-web="${naverWebUrl(p)}" id="nvOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>네이버 지도</a>
       </div></div>
 
+
+    <div class="sec"><h4>위치</h4><dl class="kv">${row('도로명',p.addr)}${row('지번',p.jibun)}${row('상세',p.addrDetail)}</dl></div>
+
     <div class="sec"><h4>메뉴</h4>${(p.menus||[]).length?(p.menus||[]).map(m=>`<div class="mrow"><span>${m.sig?'<b style="color:var(--accent)">★</b> ':''}${m.name}${m.cat&&L2NAME[m.cat]?` <small style="color:var(--ink3)">${L2NAME[m.cat]}</small>`:''}</span><span class="p">${m.price!=null?won(m.price):(m.note||'시가')}</span></div>`).join(''):'<div class="na">아직 없어요</div>'}</div>
 
     <div class="sec"><h4>가격대</h4><dl class="kv">${row('수준',pr.level?'₩ '+(PLV[pr.level]||pr.level):null)}${row('점심 1인',won(pr.lunch_per_person))}${row('저녁 1인',won(pr.dinner_per_person))}</dl></div>
+
+    <div class="sec"><h4>영업시간</h4><dl class="kv">${row('영업',h.open?h.open+'–'+(h.close||''):null)}${row('브레이크',h.break_time)}${row('라스트오더',h.last_order)}${row('휴무',h.holiday)}${row('점심 영업',yn(h.lunch_open))}${h.raw?row('원문',h.raw):''}</dl></div>
 
     <div class="sec"><h4>자리 · 예약</h4><dl class="kv">
       ${row('예약',tri(f.reservation)+(f.reservation_note?' — '+f.reservation_note:''))}
@@ -568,32 +573,11 @@ function detail(id){
       ${row('포장',yn(f.takeout))}
     </dl></div>
 
-    <div class="sec"><h4>분위기</h4><dl class="kv">${row('무드',v.mood)}${row('태그',(v.tags||[]).join(', ')||null)}${row('메모',v.note)}</dl></div>
-
     <div class="sec"><h4>웨이팅</h4><dl class="kv">${row('정도',WL[wt.level]?WL[wt.level][0]:null)}${row('피크',wt.peak_time)}${row('메모',wt.note)}</dl></div>
 
-    <div class="sec"><h4>영업시간</h4><dl class="kv">${row('영업',h.open?h.open+'–'+(h.close||''):null)}${row('브레이크',h.break_time)}${row('라스트오더',h.last_order)}${row('휴무',h.holiday)}${row('점심 영업',yn(h.lunch_open))}${h.raw?row('원문',h.raw):''}</dl></div>
+    <div class="sec"><h4>분위기</h4><dl class="kv">${row('무드',v.mood)}${row('태그',(v.tags||[]).join(', ')||null)}${row('메모',v.note)}</dl></div>
 
-    ${p.note?`<div class="sec"><h4>메모</h4>${p.note}</div>`:''}
-
-    <div class="sec"><h4>위치</h4><dl class="kv">${row('도로명',p.addr)}${row('지번',p.jibun)}${row('상세',p.addrDetail)}${row('좌표',p.coord?p.coord.lat.toFixed(5)+', '+p.coord.lng.toFixed(5):null)}</dl></div>
-
-
-    <div class="sec"><h4>인허가</h4><dl class="kv">${row('종별',p.licType)}${row('업태',p.lic)}${row('인허가일',p.licDate)}${row('영업상태',p.status)}${row('관리번호',p.source&&p.source.localdata_mgtno)}</dl></div>
-
-    <div class="sec"><h4>데이터 품질</h4><dl class="kv">
-      ${row('상태',ds)}
-      ${row('신뢰도',`<span class="tag ${conf[1]}">${conf[0]}</span>`)}
-      ${row('카카오 확인',yn(vf.in_kakao))}${row('구글 확인',yn(vf.in_google))}
-      ${row('매칭',vf.match_score!=null?vf.match_score.toFixed(2)+(vf.match_method?' · '+vf.match_method:''):null)}
-      ${row('출처',(p.source&&p.source.collected_by||[]).join(', ')||null)}
-      ${row('갱신일',p.updated)}
-      ${mm?row('수동 수집',(mm.filled_at||'')+(mm.batch_id?' · '+mm.batch_id:'')+(mm.human_verified?' · 현장 확인':'')):''}
-      ${mm&&mm.next_review?row('재확인 예정',mm.next_review):''}
-      ${mm&&(mm.sources||[]).length?row('근거',mm.sources.map(x=>`<a href="${x.url}" target="_blank" rel="noopener" style="color:var(--accent)">${x.title||x.url}</a>${x.as_of?' ('+x.as_of+')':''}`).join('<br>')):''}
-      ${row('인기 별점',p.stars?STARS(p.stars)+' <span class="na">('+((DATA.config||{}).starsNote||'임시 지표')+')</span>':'<span class="na">측정 보류</span>')}${row('블로그 언급',p.recent!=null?'최근 1년 '+p.recent+'건 · 누적 '+(p.reviews||0).toLocaleString()+'건':null)}${row('네이버 분류',p.naverCat)}
-    </dl></div>
-    <div class="foot"><button class="flink" data-feedback data-shop="${p.name}">이 가게 정보가 틀렸어요</button><span class="dot">·</span>${p.id}</div>
+    <div class="foot"><button class="flink" data-feedback data-shop="${p.name}">이 가게 정보가 틀렸어요</button></div>
   </div>`;
   $('#detail').classList.add('open');$('#detail').scrollTop=0;
   $('#dback').onclick=()=>{$('#detail').classList.remove('open');render();if($('#pick').classList.contains('open'))renderPick();};
@@ -732,7 +716,7 @@ function renderAdv(){const a=S.adv;const sw=(k,l,sub)=>`<div class="sw"><span cl
    <div class="sw col"><span class="l">예약 인원<small>이 인원이 한 자리에 앉을 수 있는 곳만 (확인된 곳 기준)</small></span><span class="mini stepper"><button data-gdelta="-1">−</button><input id="gInput" type="text" inputmode="numeric" value="${a.group||'–'}" aria-label="예약 인원"><button data-gdelta="1">＋</button><button data-group="" aria-pressed="${!a.group}">무관</button></span></div>
 </div>
    <div class="grp"><h4>대기 · 기타</h4>${sw('lowWait','웨이팅 적음','없음·조금만')}
-   ${sw('showHidden','미확인 업소도 보기','카카오·구글·네이버 어디에도 없는 곳 (폐업 의심)')}</div>
+   ${sw('showHidden','미확인 업소도 보기','인터넷에서 확인되지 않은 곳 (폐업 의심)')}</div>
    <div class="btnrow" style="margin-top:14px"><button class="secondary" id="advReset">초기화</button><button class="secondary" id="advDone" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">적용 (${inRange().length}곳)</button></div>`;}
 $('#advBtn').onclick=()=>{renderAdv();$('#advPop').classList.add('open');};
 $('#advSheet').addEventListener('focusin',e=>{if(e.target.id==='gInput'&&e.target.value==='–')e.target.value='';});
