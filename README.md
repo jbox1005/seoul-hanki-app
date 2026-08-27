@@ -1,4 +1,3 @@
-# 서울 한끼 — 빌드 결과물
+# 서울 한끼
 
-앱 페이지: https://jbox1005.github.io/seoul-hanki-app/  
-이 저장소는 빌드 산출물만 담습니다(소스는 비공개). 공지는 `proto/notices.json`.
+앱이 https://seoul-hanki.pages.dev/ 로 이사했습니다. 이 저장소는 옛 주소를 새 주소로 넘겨주기만 합니다.
